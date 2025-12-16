@@ -1,0 +1,90 @@
+How to setup Photobooth (Send Photo/Video/Photo+Video over Mail) and Generate QR Code Along with it.
+
+1. Setup GitHub Repository and clone it on computer. ex (mohsin-photobooth-mailer)
+
+----- in .gitignore add Node file
+----- open command prompt inside folder
+----- type = npm init -y
+----- in your .gitigore, add .env and .vercel
+----- create a folder structure like this mohsin-photobooth-mailer/api/send-photo.js
+
+
+
+
+2. Setup Vercel Deployment and connect it to GitHub.
+
+---- Connect your GitHub account to Vercel account and you'll get the repository list.
+---- select/import the photobooth repository and hit deploy.
+---- You'll get an endpoint like this (https://mohsin-photobooth-mailer.vercel.app/api/send-photo). Use this   	url in your unity project script.
+---- you'll get two or more deployment points like 
+	[Deployment] -  mohsin-photobooth-mailer1-qfs3h25gg-mohsins-projects-5e0e479c.vercel.app 
+	[Domains] -  mohsin-photobooth-mailer1.vercel.app.
+---- Always use [Domain].
+---- Go to Vercel Project → Settings → Environment Variables:
+	Name: RESEND_API_KEY
+	Value: re_123456789abcdef
+	Environment: Production
+---- Click save and redeploy your domain
+
+
+
+3. Setup Resend (Email API)
+---- Go to https://resend.com
+---- Sign up (GitHub or email)
+---- Go to API Keys
+---- Create a new API key. It will be like this - re_123456789abcdef
+---- Setup this Key in Vercel.
+
+
+4. In your project folder in vscode, install resend api library using npm install resend
+----- update the send-photo.js code from (https://github.com/mohsinkumarkiri/mohsin-photobooth-mailer/blob/main/api/send-photo.js)
+----- push the updated code to GitHub and Vercel will automatically detects your commit files and update. If you haven't setup deployement, setup new project in vercel, import your repo from github and deploy it.
+
+
+
+5. Test your deployment in Postman
+---- Method: POST
+---- url: https://mohsin-photobooth-mailer.vercel.app/api/send-photo
+---- Header -> Content-Type: application/json
+---- Body: raw -> json -> 
+
+{
+  "mailTo": "test@example.com",
+  "imageData": "/9j/4AAQSkZJRgABAQEASABIAAD/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARATFhcaGDUjJTUnNXd3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3f/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAf/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAP/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCfAA=="
+}
+
+
+
+6. To send videos, you can't directly send video over mail due to file size restriction. Gmail attachement limit is only 25-30 mb. So we'll send link. To do that, we'll use Cloudinary to store our videos in server and generate the download url and attach that url in post method.
+
+----- go to cloudinary and setup account.
+----- open dashboard and note these values
+	i. Cloud Name
+	ii. API Key
+	iii. API Secret
+----- in cloudinary dashboard
+	Settings → Upload
+		Enable Unsigned Uploads
+		Create an Upload Preset
+		Name: photobooth_videos
+		Folder: photobooth/videos
+		Resource type: video (if option is available)
+---- save your settings
+---- In unity, in CloudinaryVideoUploader.cs script, set your cloud name and uploadPreset name 			(photobooth_videos)
+---- after testing through postman, you'll get the video url like this
+	https://res.cloudinary.com/yourcloud/video/upload/v1712345678/photobooth/videos/abcd1234.mp4
+
+
+
+
+7. Setup QR package unity asset store - https://assetstore.unity.com/packages/tools/game-toolkits/qr-code-sharing-system-287323
+
+
+
+
+
+
+
+
+
+
